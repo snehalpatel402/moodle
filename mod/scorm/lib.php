@@ -1333,12 +1333,12 @@ function scorm_check_mode($scorm, &$newattempt, &$attempt, $userid, &$mode) {
 
     $sql = "SELECT sc.id, sub.value
               FROM {scorm_scoes} sc
-         LEFT JOIN (SELECT v.scoid, v.value
+         LEFT JOIN (SELECT v.scoid, v.value, e.element
                       FROM {scorm_attempt} a
                       JOIN {scorm_scoes_value} v ON a.id = v.attemptid
-                      JOIN {scorm_element} e on e.id = v.elementid AND e.element = :element
+                      JOIN {scorm_element} e on e.id = v.elementid
                      WHERE a.userid = :userid AND a.attempt = :attempt AND a.scormid = :scormid) sub ON sub.scoid = sc.id
-             WHERE sc.scormtype = 'sco' AND sc.scorm = :scormid2";
+             WHERE sc.scormtype = 'sco' AND sc.scorm = :scormid2 AND sub.element = :element";
     $tracks = $DB->get_recordset_sql($sql, ['userid' => $userid, 'attempt' => $attempt,
                                             'element' => $completionelement, 'scormid' => $scorm->id,
                                             'scormid2' => $scorm->id]);
